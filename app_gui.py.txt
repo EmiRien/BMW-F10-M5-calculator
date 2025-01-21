@@ -1,0 +1,66 @@
+import math
+import tkinter as tk
+from tkinter import messagebox
+
+def calculate_time():
+    try:
+        horsepower = float(entry_hp.get())
+        if horsepower <= 0:
+            raise ValueError("Horsepower must be greater than zero.")
+        time = 9.298e-6 * horsepower**2 - 0.0207 * horsepower + 16.53
+        label_result.config(text=f"Time: {time:.2f} seconds")
+    except ValueError as e:
+        messagebox.showerror("Invalid Input", str(e))
+
+def calculate_horsepower():
+    try:
+        time = float(entry_time.get())
+        if time <= 0:
+            raise ValueError("Time must be greater than zero.")
+        a = 9.298e-6
+        b = -0.0207
+        c = 16.53 - time
+        discriminant = b**2 - 4 * a * c
+        if discriminant < 0:
+            raise ValueError("No real solution (negative discriminant).")
+        horsepower = (-b + math.sqrt(discriminant)) / (2 * a)
+        label_result.config(text=f"Horsepower: {horsepower:.2f} hp")
+    except ValueError as e:
+        messagebox.showerror("Invalid Input", str(e))
+
+# GUI setup
+window = tk.Tk()
+window.title("Horsepower-Time Calculator")
+window.geometry("400x300")
+window.resizable(False, False)
+
+# Instructions
+label_instruction = tk.Label(window, text="Choose a calculation type and enter a value:")
+label_instruction.pack(pady=10)
+
+# Input for horsepower
+frame_hp = tk.Frame(window)
+frame_hp.pack(pady=5)
+label_hp = tk.Label(frame_hp, text="Horsepower:")
+label_hp.pack(side=tk.LEFT, padx=5)
+entry_hp = tk.Entry(frame_hp)
+entry_hp.pack(side=tk.LEFT, padx=5)
+btn_calc_time = tk.Button(frame_hp, text="Calculate Time", command=calculate_time)
+btn_calc_time.pack(side=tk.LEFT, padx=5)
+
+# Input for time
+frame_time = tk.Frame(window)
+frame_time.pack(pady=5)
+label_time = tk.Label(frame_time, text="Time (s):")
+label_time.pack(side=tk.LEFT, padx=5)
+entry_time = tk.Entry(frame_time)
+entry_time.pack(side=tk.LEFT, padx=5)
+btn_calc_hp = tk.Button(frame_time, text="Calculate Horsepower", command=calculate_horsepower)
+btn_calc_hp.pack(side=tk.LEFT, padx=5)
+
+# Result
+label_result = tk.Label(window, text="", font=("Helvetica", 14), fg="blue")
+label_result.pack(pady=20)
+
+# Run the GUI loop
+window.mainloop()
